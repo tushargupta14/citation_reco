@@ -42,7 +42,7 @@ def GN(c_query,abs_tit_context_dict,abs_tit_cit_dict,N,feature_idf,tfidf_dict):
    #             score_dict[score_key] = score
 		#print score
 
-	candidate_score_list = sorted(score_dict,reverse=True)[:N]
+	candidate_score_list = sorted(score_dict,key=score_dict.get,reverse=True)[:N]
 
        # cnt = Counter(score_dict)
        # candidate_score_list = cnt.most_common(N)

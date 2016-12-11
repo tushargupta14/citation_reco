@@ -39,7 +39,7 @@ def LCN(c_query,nlp_context_dict,nlp_cit_dict,N,feature_idf,tfidf_dict):
           #      score_key = nlp_cit_dict[key]
            #     score_dict[score_key] = score
 		#print score
-	candidate_score_list = sorted(score_dict,reverse=True)[:N]
+	candidate_score_list = sorted(score_dict,key=score_dict.get,reverse=True)[:N]
 
         #cnt = Counter(score_dict)
         #candidate_score_list = cnt.most_common(N)
