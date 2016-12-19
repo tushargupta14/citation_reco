@@ -11,7 +11,8 @@ def get_citer_doc(c_id,nlp_cit_dict):
 	
 
 def create_inverted_index(idf_dict,nlp_context_dict,nlp_cit_dict):
-
+	
+	n_words = 1009668
 	stop_words = set(stopwords.words("english"))
 	# running over all the words in the idf dictionary
 	inverted_index = {}
@@ -29,7 +30,7 @@ def create_inverted_index(idf_dict,nlp_context_dict,nlp_cit_dict):
 		inverted_index[word] = list(doc_list),n_docs
 		word_count+=1
 		if word_count%100 == 0:
-			print word_count
+			print word_count,n_words
 
 	print "Dumping to json"	
 	with open("nlp_inverted_index.json","wb+") as f:
@@ -41,9 +42,9 @@ def create_inverted_index(idf_dict,nlp_context_dict,nlp_cit_dict):
 			
 if __name__ == "__main__" :
 
-	 idf_dict = cp.load(open("/home/du3/13CS30045/citation_reco/citation_vectors/tfidf_vocab_with_idf_stats.pkl","rb"))
-	 nlp_context_dict = cp.load(open("/home/du3/13CS30045/citation_reco/dataset/citation_dictionary_nlp.pkl","rb+"))
-	 nlp_cit_dict = cp.load(open("/home/du3/13CS30045/citation_reco/dataset/citation_to_doc_map.pkl","rb+"))
+	 idf_dict = cp.load(open("/home/du3/13CS30045/citation_reco/citation_vectors/train/tfidf_vocab_with_idf_stats.pkl","rb"))
+	 nlp_context_dict = cp.load(open("/home/du3/13CS30045/citation_reco/citation_vectors/train/citation_dictionary_nlp.pkl","rb+"))
+	 nlp_cit_dict = cp.load(open("/home/du3/13CS30045/citation_reco/citation_vectors/train/citation_to_doc_map.pkl","rb+"))
 	 #n_docs : number of total documents 
 	 print "loaded dicts"	
 	 create_inverted_index(idf_dict,nlp_context_dict,nlp_cit_dict)
