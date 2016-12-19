@@ -3,8 +3,6 @@
 #citation_vectors/train/nlp_context_tfidf.pkl
 #ouput:sorted dictionary of final recommendations
 
-print 'starting script'
-
 import sys
 sys.path.insert(0, '/home/du3/13CS30045/citation_reco/candidate_set')
 sys.path.insert(1, '/home/du3/13CS30045/citation_reco/candidate_set/novel_method')
@@ -16,10 +14,7 @@ import cPickle as cp
 import time
 from nltk.corpus import stopwords
 
-print 'generating stopwords'
-
-stopword_list = stopwords.words('english')
-stopword = {words:'present' for words in stopword_list}
+stopword = stopwords.words('english')
 
 #this recommender function is for the novel method 
 
@@ -112,7 +107,7 @@ tfidf_dict):
 
 query_dict={}
 
-def query_fire(doc_idf,nlp_context_dict,abs_tit_context_dict,nlp_cit_dict,abs_tit_cit_dict,feature_idf_abstract_title,feature_idf_context,tfidf_abstract,tfidf_context,inlinks,tfidf_dict,full_idf,K):
+def query_fire(doc_idf,nlp_context_dict,abs_tit_context_dict,nlp_cit_dict,abs_tit_cit_dict,feature_idf_abstract_title,feature_idf_context,tfidf_abstract,tfidf_context,inlinks,tfidf_dict,full_idf):
 	#this funtion fires n queries , stores their results as a dictionary of list with every list
 	#containing top 10 recommendations indexed by the quereies ID
 	
@@ -131,10 +126,10 @@ def query_fire(doc_idf,nlp_context_dict,abs_tit_context_dict,nlp_cit_dict,abs_ti
 	print ('time for 1000 queries')
 
 	start_time = time.time()
-	#result_doc = {key : recommender(contexts_to_test[key],nlp_context_dict,abs_tit_context_dict,nlp_cit_dict,abs_tit_cit_dict
-#,feature_idf_abstract_title,feature_idf_context,tfidf_abstract,tfidf_context,inlinks,tfidf_dict) for key in final_query_list}
-	result_doc = {key : recommender_novel(contexts_to_test[key],nlp_context_dict,abs_tit_context_dict,nlp_cit_dict,abs_tit_cit_dict
-,feature_idf_abstract_title,feature_idf_context,tfidf_abstract,tfidf_context,inlinks,tfidf_dict,doc_idf,K,full_idf) for key in final_query_list}
+	result_doc = {key : recommender(contexts_to_test[key],nlp_context_dict,abs_tit_context_dict,nlp_cit_dict,abs_tit_cit_dict
+,feature_idf_abstract_title,feature_idf_context,tfidf_abstract,tfidf_context,inlinks,tfidf_dict) for key in final_query_list}
+	#result_doc = {key : recommender_novel(contexts_to_test[key],nlp_context_dict,abs_tit_context_dict,nlp_cit_dict,abs_tit_cit_dict
+#,feature_idf_abstract_title,feature_idf_context,tfidf_abstract,tfidf_context,inlinks,tfidf_dict,doc_idf,2000,full_idf) for key in final_query_list}
 	#print("------------%s seconds -------" % (time.time()-start_time))
 	
 	#time to print 
@@ -160,13 +155,10 @@ def query_fire(doc_idf,nlp_context_dict,abs_tit_context_dict,nlp_cit_dict,abs_ti
 	print(counter)
 	print result_list
 	print 'total time taken'
-	#tot_time = end_time-start_time
 	print("------------%s seconds -------" % (end_time-start_time))
 	#return result_doc
 
-	return result_list,counter,end_time-start_time
-
-
+	return result_list,counter
 
 def evaluator(doc_idf,nlp_context_dict,abs_tit_context_dict,nlp_cit_dict,abs_tit_cit_dict
 ,feature_idf_abstract_title,feature_idf_context,tfidf_abstract,tfidf_context,inlinks,tfidf_dict,full_idf):
@@ -176,22 +168,8 @@ def evaluator(doc_idf,nlp_context_dict,abs_tit_context_dict,nlp_cit_dict,abs_tit
 ,feature_idf_abstract_title,feature_idf_context,tfidf_abstract,tfidf_context,inlinks,tfidf_dict,full_idf)
 		results.append((result_list,counter))
 		if x%5 == 0:
-			cp.dump(results,open('final_results.pkl','w+'))
+			cp.dump(results,open('temp_final_results.pkl','w+'))
 	
-
-#this function calculates the candidate set recall for top K => 100-5000
-
-def recall_top_K(doc_idf,nlp_context_dict,abs_tit_context_dict,nlp_cit_dict,abs_tit_cit_dict
-,feature_idf_abstract_title,feature_idf_context,tfidf_abstract,tfidf_context,inlinks,tfidf_dict,full_idf):
-	results = {}
-	K=[100,200,400,500,800,1000,1200,1500,1700,2000,2500,3000,3500,4000,5000]
-
-	for k in K:
-		res_list,count,timers = query_fire(doc_idf,nlp_context_dict,abs_tit_context_dict,nlp_cit_dict,abs_tit_cit_dict
-,feature_idf_abstract_title,feature_idf_context,tfidf_abstract,tfidf_context,inlinks,tfidf_dict,full_idf,k)
-		results[k]=[res_list,count,timers]
-		cp.dump(results,open('recall_results.pkl','w+'))
-
 	
 
 if __name__ == '__main__':
@@ -212,10 +190,10 @@ if __name__ == '__main__':
 	tfidf_dict = cp.load(open('/home/du3/13CS30045/citation_reco/citation_vectors/train/nlp_context_tfidf.pkl','rw'))
 	print("--- %s seconds ---" % (time.time()-start_time))
 	
-	recall_top_K(doc_idf,nlp_context_dict,abs_tit_context_dict,nlp_cit_dict,abs_tit_cit_dict
+	evaluator(doc_idf,nlp_context_dict,abs_tit_context_dict,nlp_cit_dict,abs_tit_cit_dict
 ,feature_idf_abstract_title,feature_idf_context,tfidf_abstract,tfidf_context,inlinks,tfidf_dict,full_idf)
 
-	#	result_doc = query_fire(doc_idf,nlp_context_dict,abs_tit_context_dict,nlp_cit_dict,abs_tit_cit_dict
+	#result_doc = query_fire(doc_idf,nlp_context_dict,abs_tit_context_dict,nlp_cit_dict,abs_tit_cit_dict
 #,feature_idf_abstract_title,feature_idf_context,tfidf_abstract,tfidf_context,inlinks,tfidf_dict,full_idf)
 	
 
