@@ -2,6 +2,9 @@ dataset/
 !*.py
 *.pkl
 *.txt
+*.swp
+*.pyc
+
 # Compiled source #
 ###################
 *.com
